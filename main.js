@@ -1,38 +1,37 @@
 import { Application, Assets, Sprite, Container } from 'pixi.js';
 import { CreatePlayer } from './Player';
 import { CreateFogOfWar } from './FogOfWar';
+import { createChests } from './Chests';
 
 (async () => {
     // Создание нового приложения
     const app = new Application();
 
     // Инициализация приложения
-    await app.init({ background: '#000000', resizeTo: window });
+    await app.init({ background: '#1099bb', resizeTo: window });
     console.log('NERPA запущена!!!');
 
     // Добавление холста приложения в документ
     document.body.appendChild(app.canvas);
 
     const texture = await Assets.load('./assets/sprite.jpg');
+    const textureChest = await Assets.load('./assets/spriteChest.jpg');
 
     // Создание контейнера для объектов сцены
     const map = new Container();
 
     // Создание игрока и установка его в центр экрана
-    const player = CreatePlayer(app.screen.width / 2, app.screen.height / 2, texture); // Игрок будет находиться в координатах (0, 0)
-    
-    // Создание спрайта bunny
-    const bunny = new Sprite(texture);
-    bunny.anchor.set(0.5);
-    bunny.x = 100; // Позиция по X для объекта
-    bunny.y = 100; // Позиция по Y для объекта
+    const player = CreatePlayer(app.screen.width / 2, app.screen.height / 2, texture);
+
+    const chests = createChests(textureChest);
+
 
     const focus = CreateFogOfWar(app.screen.width, app.screen.height, app.renderer);
 
 
-    map.addChild(bunny);
-    app.stage.addChild(map, player, focus);
-    map.mask = focus;
+    map.addChild(...chests);
+    app.stage.addChild(map, player);
+    // map.mask = focus;
 
     const speed = 5; // Скорость перемещения
     const keys = {}; // Объект для хранения состояния клавиш
