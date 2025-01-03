@@ -9,13 +9,13 @@ export const CreateFogOfWar = (x,y, renderer) => {
      const bounds = new Rectangle(0, 0, x, y);
      const circle = new Graphics().circle(bounds.width / 2, bounds.height / 2, radius).fill({ color: 0xff0000 });
      circle.filters = [new BlurFilter(blurSize)];
-     const texture2 = renderer.generateTexture({
+     const texture = renderer.generateTexture({
              target: circle,
              style: { scaleMode: SCALE_MODES.NEAREST },
              resolution: 1,
              frame: bounds,
          });
-    const focus = new Sprite(texture2);
+    const focus = new Sprite(texture);
 
     return focus;
 } 

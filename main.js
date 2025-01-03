@@ -4,6 +4,7 @@ import { CreateFogOfWar } from './FogOfWar';
 import { createChests } from './Chests';
 import { createCages } from './Cages';
 import { CreateControlCircle } from './ControlCircle';
+import { createGameUI } from './GameUi';
 
 (async () => {
     // Создание нового приложения
@@ -19,6 +20,9 @@ import { CreateControlCircle } from './ControlCircle';
     const texture = await Assets.load('./assets/sprite.jpg');
     const textureChest = await Assets.load('./assets/spriteChest.jpg');
     const textureCage = await Assets.load('./assets/cageoriginal.jpg');
+    const textureUImap = await Assets.load('./assets/map.jpg');
+    const textureUISettings = await Assets.load('./assets/settings.png');
+    const textureUIuse = await Assets.load('./assets/use.jpg');
 
     // Создание контейнера для объектов сцены
     const map = new Container();
@@ -33,13 +37,15 @@ import { CreateControlCircle } from './ControlCircle';
     const focus = CreateFogOfWar(app.screen.width, app.screen.height, app.renderer);
     const controlCircle = CreateControlCircle(Math.max(app.screen.width / 10, 200), Math.max(app.screen.height - (app.screen.height / 4), 300), 150);
 
+    const gameUi = createGameUI(app.screen.width, app.screen.height, [textureUIuse, textureUImap, textureUISettings]);
+    console.log(textureUISettings)
+
 
     map.addChild(...chests, ...cages);
-    app.stage.addChild(map, player, controlCircle);
+    app.stage.addChild(map, player, controlCircle, gameUi);
 
     let defaultCirleCoords = {x: controlCircle.getChildByName('grey').x, y: controlCircle.getChildByName('grey').y};
 
-    console.log(controlCircle.children[1], controlCircle.getChildByName('grey'), 's')
     map.mask = focus;
 
     const speed = 5; // Скорость перемещения
