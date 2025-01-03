@@ -5,6 +5,7 @@ import { createChests } from './Chests';
 import { createCages } from './Cages';
 import { CreateControlCircle } from './ControlCircle';
 import { createGameUI } from './GameUi';
+import { createMapBorders } from './MapBorders';
 
 (async () => {
     // Создание нового приложения
@@ -38,10 +39,11 @@ import { createGameUI } from './GameUi';
     const controlCircle = CreateControlCircle(Math.max(app.screen.width / 10, 200), Math.max(app.screen.height - (app.screen.height / 4), 300), 150);
 
     const gameUi = createGameUI(app.screen.width, app.screen.height, [textureUIuse, textureUImap, textureUISettings]);
-    console.log(textureUISettings)
 
+    const mapBordersCoords = [-1000, 4000, 3000, -1000]
+    const mapBorders = createMapBorders(...mapBordersCoords);
 
-    map.addChild(...chests, ...cages);
+    map.addChild(mapBorders,...chests, ...cages);
     app.stage.addChild(map, player, controlCircle, gameUi);
 
     let defaultCirleCoords = {x: controlCircle.getChildByName('grey').x, y: controlCircle.getChildByName('grey').y};
@@ -62,6 +64,8 @@ import { createGameUI } from './GameUi';
     });
 
     app.ticker.add((time) => {
+        let beforeMove = {x: map.x, y: map.y};
+
         if (keys['w']) {
             controlCircle.getChildByName('grey').y = defaultCirleCoords.y;
             controlCircle.getChildByName('grey').y -= 110;
@@ -73,16 +77,20 @@ import { createGameUI } from './GameUi';
             map.y -= speed; // Движение сцены вниз
         }
         if (keys['a']) {
-            controlCircle.children[1].x = defaultCirleCoords.x;
-            controlCircle.children[1].x -= 110;
+            controlCircle.getChildByName('grey').x = defaultCirleCoords.x;
+            controlCircle.getChildByName('grey').x -= 110;
             map.x += speed; // Движение сцены влево
         }
         if (keys['d']) {
-            controlCircle.children[1].x = defaultCirleCoords.x;
-            controlCircle.children[1].x += 110;
+            controlCircle.getChildByName('grey').x = defaultCirleCoords.x;
+            controlCircle.getChildByName('grey').x += 110;
             map.x -= speed; // Движение сцены вправо
         }
 
-        // Обновляем позицию игрока в центре экрана
+        //- Границы карты
+        if (map.x > 2230 || map.x < -2680 || map.y > 2025 || map.y < -1925) {
+            map.x = beforeMove.x;
+            map.y = beforeMove.y;
+        }
     });
 })();
