@@ -10,6 +10,7 @@ import { createMapBorders } from './MapBorders';
 (async () => {
     // Создание нового приложения
     const app = new Application();
+    const spawnCords = {x: 0, y: 0};
 
     // Инициализация приложения
     await app.init({ background: '#1099bb', resizeTo: window });
@@ -27,9 +28,14 @@ import { createMapBorders } from './MapBorders';
 
     // Создание контейнера для объектов сцены
     const map = new Container();
+    map.x = app.screen.width / 2 - spawnCords.x;
+    map.y = app.screen.height / 2 - spawnCords.y;
+
+    const testBorder = {x: map.x, y: map.y}
+
 
     // Создание игрока и установка его в центр экрана
-    const player = CreatePlayer(app.screen.width / 2, app.screen.height / 2, texture);
+    const player = CreatePlayer(spawnCords.x,spawnCords.y,  texture);
 
     const chests = createChests(textureChest);
     const cages = createCages(textureCage);
@@ -40,11 +46,11 @@ import { createMapBorders } from './MapBorders';
 
     const gameUi = createGameUI(app.screen.width, app.screen.height, [textureUIuse, textureUImap, textureUISettings]);
 
-    const mapBordersCoords = [-1000, 4000, 3000, -1000]
+    const mapBordersCoords = [0, 3000, 3000, 0] //- как margin
     const mapBorders = createMapBorders(...mapBordersCoords);
 
-    map.addChild(mapBorders,...chests, ...cages);
-    app.stage.addChild(map, player, controlCircle, gameUi);
+    map.addChild(mapBorders,...chests, ...cages, player);
+    app.stage.addChild(map, controlCircle, gameUi);
 
     let defaultCirleCoords = {x: controlCircle.getChildByName('grey').x, y: controlCircle.getChildByName('grey').y};
 
@@ -65,32 +71,41 @@ import { createMapBorders } from './MapBorders';
 
     app.ticker.add((time) => {
         let beforeMove = {x: map.x, y: map.y};
+        let beforePlayerMove = {x: map.getChildByName('player').x, y: map.getChildByName('player').y}
+        console.log(map.x, map.y, 'coords', testBorder.x + 0, testBorder.y + 200);
 
         if (keys['w']) {
             controlCircle.getChildByName('grey').y = defaultCirleCoords.y;
             controlCircle.getChildByName('grey').y -= 110;
+            console.log('1')
+            map.getChildByName('player').y -= speed;
             map.y += speed; // Движение сцены вверх
         }
         if (keys['s']) {
             controlCircle.getChildByName('grey').y = defaultCirleCoords.y;
             controlCircle.getChildByName('grey').y += 110;
+            map.getChildByName('player').y += speed;
             map.y -= speed; // Движение сцены вниз
         }
         if (keys['a']) {
             controlCircle.getChildByName('grey').x = defaultCirleCoords.x;
             controlCircle.getChildByName('grey').x -= 110;
+            map.getChildByName('player').x -= speed;
             map.x += speed; // Движение сцены влево
         }
         if (keys['d']) {
             controlCircle.getChildByName('grey').x = defaultCirleCoords.x;
             controlCircle.getChildByName('grey').x += 110;
+            map.getChildByName('player').x += speed;
             map.x -= speed; // Движение сцены вправо
         }
 
         //- Границы карты
-        if (map.x > 2230 || map.x < -2680 || map.y > 2025 || map.y < -1925) {
+        if (map.x > testBorder.x || map.x < (testBorder.x - 3000) || map.y > testBorder.y || map.y < (testBorder.y - 3000) ) {
             map.x = beforeMove.x;
             map.y = beforeMove.y;
+            map.getChildByName('player').x = beforePlayerMove.x;
+            map.getChildByName('player').y = beforePlayerMove.y;
         }
     });
 })();
