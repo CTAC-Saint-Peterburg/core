@@ -6,6 +6,8 @@ import { createCages } from './Cages';
 import { CreateControlCircle } from './ControlCircle';
 import { createGameUI } from './GameUi';
 import { createMapBorders } from './MapBorders';
+import { CreateCharacter } from './Character';
+import { checkCollision } from './CollisionDetection';
 
 (async () => {
     // Создание нового приложения
@@ -23,8 +25,10 @@ import { createMapBorders } from './MapBorders';
     const textureChest = await Assets.load('./assets/spriteChest.jpg');
     const textureCage = await Assets.load('./assets/cageoriginal.jpg');
     const textureUImap = await Assets.load('./assets/map.jpg');
-    const textureUISettings = await Assets.load('./assets/settings.png');
-    const textureUIuse = await Assets.load('./assets/use.jpg');
+    const textureUISettings = await Assets.load('./assets/settingsIcon.jpg');
+    const textureUIuse = await Assets.load('./assets/useIcon.jpg');
+    const textureAttack = await Assets.load('./assets/attack.jpg');
+    const textureCharacter = await Assets.load('./assets/character.jpg');
 
     // Создание контейнера для объектов сцены
     const map = new Container();
@@ -39,17 +43,18 @@ import { createMapBorders } from './MapBorders';
 
     const chests = createChests(textureChest);
     const cages = createCages(textureCage);
+    const characters = CreateCharacter(textureCharacter);
 
 
     const focus = CreateFogOfWar(app.screen.width, app.screen.height, app.renderer);
     const controlCircle = CreateControlCircle(Math.max(app.screen.width / 10, 200), Math.max(app.screen.height - (app.screen.height / 4), 300), 150);
 
-    const gameUi = createGameUI(app.screen.width, app.screen.height, [textureUIuse, textureUImap, textureUISettings]);
+    const gameUi = createGameUI(app.screen.width, app.screen.height, [textureUIuse, textureUImap, textureUISettings, textureAttack]);
 
     const mapBordersCoords = [0, 3000, 3000, 0] //- как margin
     const mapBorders = createMapBorders(...mapBordersCoords);
 
-    map.addChild(mapBorders,...chests, ...cages, player);
+    map.addChild(mapBorders,...chests, ...cages, ...characters, player);
     app.stage.addChild(map, controlCircle, gameUi);
 
     let defaultCirleCoords = {x: controlCircle.getChildByName('grey').x, y: controlCircle.getChildByName('grey').y};
@@ -66,18 +71,21 @@ import { createMapBorders } from './MapBorders';
     window.addEventListener('keyup', (event) => {
         controlCircle.getChildByName('grey').x = defaultCirleCoords.x;
         controlCircle.getChildByName('grey').y = defaultCirleCoords.y;
+
+        if (keys['f']) {
+            console.log('use');
+            checkCollision(player);
+        }
         keys[event.key] = false;
     });
 
     app.ticker.add((time) => {
         let beforeMove = {x: map.x, y: map.y};
         let beforePlayerMove = {x: map.getChildByName('player').x, y: map.getChildByName('player').y}
-        console.log(map.x, map.y, 'coords', testBorder.x + 0, testBorder.y + 200,map.x);
 
         if (keys['w']) {
             controlCircle.getChildByName('grey').y = defaultCirleCoords.y;
             controlCircle.getChildByName('grey').y -= 110;
-            console.log('1')
             map.getChildByName('player').y -= speed;
             map.y += speed; // Движение сцены вверх
         }
@@ -107,5 +115,7 @@ import { createMapBorders } from './MapBorders';
             map.getChildByName('player').x = beforePlayerMove.x;
             map.getChildByName('player').y = beforePlayerMove.y;
         }
+
+        map.getChildByName('player').children[0].text = `x: ${player.x} y: ${player.y}`
     });
 })();
