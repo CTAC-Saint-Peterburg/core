@@ -72,7 +72,7 @@ import { createMapBorders } from './MapBorders';
     app.ticker.add((time) => {
         let beforeMove = {x: map.x, y: map.y};
         let beforePlayerMove = {x: map.getChildByName('player').x, y: map.getChildByName('player').y}
-        console.log(map.x, map.y, 'coords', testBorder.x + 0, testBorder.y + 200);
+        console.log(map.x, map.y, 'coords', testBorder.x + 0, testBorder.y + 200,map.x);
 
         if (keys['w']) {
             controlCircle.getChildByName('grey').y = defaultCirleCoords.y;
@@ -101,7 +101,7 @@ import { createMapBorders } from './MapBorders';
         }
 
         //- Границы карты
-        if (map.x > testBorder.x || map.x < (testBorder.x - 3000) || map.y > testBorder.y || map.y < (testBorder.y - 3000) ) {
+        if (map.x > testBorder.x + spawnCords.x || map.x < testBorder.x - 3000 + spawnCords.x || map.y > testBorder.y + spawnCords.y || map.y < (testBorder.y - 3000 + spawnCords.y) ) {
             map.x = beforeMove.x;
             map.y = beforeMove.y;
             map.getChildByName('player').x = beforePlayerMove.x;
