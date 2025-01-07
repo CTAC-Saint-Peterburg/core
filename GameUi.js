@@ -1,4 +1,4 @@
-import { Graphics, Container, Sprite} from "pixi.js";
+import { Graphics, Container, Sprite, Text} from "pixi.js";
 
 export const createGameUI = (appWidth, appHeight, textures) => {
 
@@ -10,6 +10,21 @@ export const createGameUI = (appWidth, appHeight, textures) => {
         {name: 'settings', x: Math.max(appWidth - 200, 200), y: 100, radius: 60, texture: textures[2]}
     ];
     let ui = data.map((unit, index)=> {
+        const mock = new Container();
+        mock.label = unit.name + 'container';
+
+        const text = new Text({ 
+            text: '',
+            style: {
+                fontFamily: 'Arial',
+                fontSize: 100,
+                fill: 'black',
+                align: 'center',
+        }});
+        text.x = unit.x - 30;
+        text.y = unit.y - 60;
+        text.name = unit.name;
+        text.timerState = false;
         let circle = new Graphics().circle(unit.x, unit.y, unit.radius).fill('red');
         const sprite = new Sprite(unit.texture);
         sprite.anchor.set(0.5);
@@ -17,11 +32,11 @@ export const createGameUI = (appWidth, appHeight, textures) => {
         sprite.y = unit.y;
         sprite.width = sprite.width / 3;
         sprite.height = sprite.height / 3;
-
         sprite.mask = circle;
-        return sprite;
+        mock.addChild(sprite);
+        mock.addChild(text);
+        return mock;
     });
-
     gameUi.addChild(...ui);
 
     return gameUi;

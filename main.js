@@ -8,6 +8,7 @@ import { createGameUI } from './GameUi';
 import { createMapBorders } from './MapBorders';
 import { CreateCharacter } from './Character';
 import { checkCollision } from './CollisionDetection';
+import { createTimer } from './Timer';
 
 (async () => {
     // Создание нового приложения
@@ -73,8 +74,11 @@ import { checkCollision } from './CollisionDetection';
         controlCircle.getChildByName('grey').y = defaultCirleCoords.y;
 
         if (keys['f']) {
-            console.log('use');
-            checkCollision(player);
+            let address = app.stage.getChildByName('attack', true);
+            if (!address.timerState) {
+                createTimer(address, 5);
+                checkCollision(player);
+            }
         }
         keys[event.key] = false;
     });

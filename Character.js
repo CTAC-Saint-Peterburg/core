@@ -12,7 +12,6 @@ export const CreateCharacter = (texture)=> {
         mock.circle(data.characters[i].x, data.characters[i].y, 50);
         mock.fill(0xde3249);
         mock.texture(texture,0xffffff, data.characters[i].x, data.characters[i].y, 100, 150);
-        console.log('inner', mock.x);
         characters.push(mock);
     }
 

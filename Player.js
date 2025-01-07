@@ -9,8 +9,7 @@ export const CreatePlayer = (x = 0, y = 0, texture) => {
     player.fill(0xde3249);
     player.name = 'player';
     player.texture(texture,0xffffff, x, y);
-    player.addChild(text)
-    console.log(player.x)
+    player.addChild(text);
 
 return player
 }
