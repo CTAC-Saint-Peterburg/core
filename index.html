@@ -4,8 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PIXI.js Project</title>
+    <style>
+        #configModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        #configModal button {
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+    <div id="configModal">
+        <p>Выберите конфигурацию:</p>
+        <button id="defaultConfig">Стандартный конфиг</button>
+        <button id="customConfig">Загрузить свой конфиг</button>
+    </div>
+
     <script type="module" src="./main.js"></script>
 </body>
 </html>

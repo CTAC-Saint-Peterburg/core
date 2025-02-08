@@ -1,0 +1,111 @@
+{
+  "squares": [
+    {
+      "color": "red",
+      "x": 0,
+      "y": 1,
+      "size": {
+        "width": 2,
+        "height": 2
+      },
+      "layer": 1,
+      "name": "chest1",
+      "config": ""
+    },
+    {
+      "color": "green",
+      "x": 21,
+      "y": 3,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "layer": 1,
+      "name": "",
+      "config": ""
+    },
+    {
+      "color": "#ert",
+      "x": 7,
+      "y": 2,
+      "size": {
+        "width": 5,
+        "height": 5
+      },
+      "layer": 1,
+      "name": "321",
+      "config": ""
+    },
+    {
+      "color": "#eeeee",
+      "x": 30,
+      "y": 2,
+      "size": {
+        "width": 5,
+        "height": 5
+      },
+      "layer": 1,
+      "name": "",
+      "config": ""
+    },
+    {
+      "color": "#FFB841",
+      "x": 22,
+      "y": 7,
+      "size": {
+        "width": 5,
+        "height": 5
+      },
+      "layer": 1,
+      "name": "",
+      "config": ""
+    },
+    {
+      "color": "gray",
+      "x": 11,
+      "y": 4,
+      "size": {
+        "width": 1,
+        "height": 8
+      },
+      "layer": 3,
+      "name": "",
+      "config": ""
+    },
+    {
+      "color": "blue",
+      "x": 20,
+      "y": 0,
+      "size": {
+        "width": 6,
+        "height": 6
+      },
+      "layer": 1,
+      "name": "test",
+      "config": ""
+    },
+    {
+      "color": "gray",
+      "x": 3,
+      "y": 0,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "layer": 3,
+      "name": "",
+      "config": ""
+    }
+  ],
+  "settings": {
+    "playerCount": 0,
+    "peacefulPlayers": 0,
+    "traitorPlayers": 0,
+    "abilityCooldown": 0,
+    "playerHealth": 0,
+    "traitorHealth": 0,
+    "playerSpeed": 0,
+    "traitorSpeed": 0,
+    "attackCooldown": 0
+  }
+}

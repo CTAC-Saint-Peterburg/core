@@ -1,17 +1,17 @@
 import { Sprite } from "pixi.js";
-import dataJSON from './settings/Cages.json';
 
-const data = dataJSON;
 
-export const createCages = (texture)=> {
+export const createCages = (texture, currentData, CELL_SIZE)=> {
+    const data = currentData.squares.filter(x=> x.color === 'blue');
     const cages = [];
-    for(let i = 0; i < data.cages.length; i++) {
+    for(let i = 0; i < data.length; i++) {
         const mock = new Sprite(texture);
         // mock.anchor.set(0.5);
-        mock.x = data.cages[i].x;
-        mock.y = data.cages[i].y;
-        // mock.width = 200;
-        // mock.height = 200;
+        mock.x = data[i].x * CELL_SIZE;
+        mock.y = data[i].y * CELL_SIZE;
+        mock.height = data[i].size.height * CELL_SIZE;
+        mock.width = data[i].size.width * CELL_SIZE;
+        mock.label = data[i].name;
         cages.push(mock);
     }
 

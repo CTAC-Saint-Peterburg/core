@@ -1,17 +1,16 @@
 import { Graphics } from "pixi.js";
-import dataJSON from './settings/Characters.json';
 
-const data = dataJSON;
-
-export const CreateCharacter = (texture)=> {
+export const CreateCharacter = (texture, currentData, CELL_SIZE)=> {
+    const data = currentData.squares.filter(x=> x.color === 'gray');
     const characters = [];
-    for(let i = 0; i < data.characters.length; i++) {
+    for(let i = 0; i < data.length; i++) {
         const mock = new Graphics();
         // mock.anchor.set(0.5);
-        mock.name = data.characters[i].name;
-        mock.circle(data.characters[i].x, data.characters[i].y, 50);
+        mock.label = data[i].name;
+        mock.circle(data[i].x * CELL_SIZE, data[i].y * CELL_SIZE, 50);
         mock.fill(0xde3249);
-        mock.texture(texture,0xffffff, data.characters[i].x, data.characters[i].y, 100, 150);
+        mock.texture(texture,0xffffff, data[i].x * CELL_SIZE, data[i].y * CELL_SIZE, 100, 150);
+        console.log(mock, 'mock')
         characters.push(mock);
     }
 
