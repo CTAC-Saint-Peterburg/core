@@ -1,14 +1,19 @@
-export const createTimer = ( state, secounds)=> {
+export const createTimer = (state, seconds) => {
     state.timerState = true;
-    let countdownTime = secounds;
-    const countdownInterval = setInterval(() => {
-        if (countdownTime > 0) {
-            countdownTime--;
-            state.text = (countdownTime + 1 ).toString();
+    let startTime = Date.now();
+
+    const updateTimer = () => {
+        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        const remainingTime = seconds - elapsedTime;
+
+        if (remainingTime > 0) {
+            state.text = remainingTime.toString();
+            requestAnimationFrame(updateTimer);
         } else {
-            clearInterval(countdownInterval);
             state.text = "";
             state.timerState = false;
         }
-    }, 1000);
-}
+    };
+
+    updateTimer();
+};

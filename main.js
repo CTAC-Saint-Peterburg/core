@@ -11,15 +11,15 @@ import { checkCollision } from './CollisionDetection';
 import { createTimer } from './Timer';
 
 (async () => {
-    // Создание нового приложения
+
     const app = new Application();
     const spawnCords = {x: 0, y: 0};
 
-    // Инициализация приложения
+
     await app.init({ background: '#1099bb', resizeTo: window });
     console.log('NERPA запущена!!!');
 
-    // Добавление холста приложения в документ
+
     document.body.appendChild(app.canvas);
 
     const texture = await Assets.load('./assets/sprite.jpg');
