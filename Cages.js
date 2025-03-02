@@ -2,7 +2,7 @@ import { Sprite } from "pixi.js";
 
 
 export const createCages = (texture, currentData, CELL_SIZE)=> {
-    const data = currentData.squares.filter(x=> x.color === 'blue');
+    const data = currentData.squares.filter(x=> x.type === 'cages');
     const cages = [];
     for(let i = 0; i < data.length; i++) {
         const mock = new Sprite(texture);

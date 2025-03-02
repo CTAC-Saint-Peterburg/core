@@ -1,7 +1,7 @@
 import { Graphics } from "pixi.js";
 
 export const CreateCharacter = (texture, currentData, CELL_SIZE)=> {
-    const data = currentData.squares.filter(x=> x.color === 'gray');
+    const data = currentData.squares.filter(x=> x.type === 'spawn');
     const characters = [];
     for(let i = 0; i < data.length; i++) {
         const mock = new Graphics();

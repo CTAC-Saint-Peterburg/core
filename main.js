@@ -8,10 +8,11 @@ import { createGameUI } from './GameUi';
 import { createMapBorders } from './MapBorders';
 import { CreateCharacter } from './Character';
 import { checkCollision } from './CollisionDetection';
+import { CreateEnvironment } from './Environment';
 import { createTimer } from './Timer';
 import defaultMap from './settings/defaultconfig.json';
 
-const CELL_SIZE = 50;
+const CELL_SIZE = 60;
 
 (async () => {
     const configModal = document.getElementById('configModal');
@@ -74,10 +75,12 @@ const CELL_SIZE = 50;
 
             const testBorder = { x: map.x, y: map.y };
 
+            const environment = CreateEnvironment(currentData, CELL_SIZE);
             const player = CreatePlayer(spawnCords.x, spawnCords.y, texture);
             const chests = createChests(textureChest, currentData, CELL_SIZE);
             const cages = createCages(textureCage, currentData, CELL_SIZE);
             const characters = CreateCharacter(textureCharacter, currentData, CELL_SIZE);
+
 
             const focus = CreateFogOfWar(app.screen.width, app.screen.height, app.renderer);
             const controlCircle = CreateControlCircle(Math.max(app.screen.width / 10, 200), Math.max(app.screen.height - (app.screen.height / 4), 300), 150);
@@ -87,7 +90,7 @@ const CELL_SIZE = 50;
             const mapBordersCoords = [0, 3000, 3000, 0];
             const mapBorders = createMapBorders(...mapBordersCoords);
 
-            map.addChild(mapBorders, ...chests, ...cages, ...characters, player);
+            map.addChild(mapBorders, environment, ...chests, ...cages, ...characters, player);
             app.stage.addChild(map, controlCircle, gameUi);
 
             let defaultCirleCoords = { x: controlCircle.getChildByName('grey').x, y: controlCircle.getChildByName('grey').y };
