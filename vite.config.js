@@ -1,7 +1,9 @@
 import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-    server: {
-        open: true, // автоматически открывать браузер при запуске сервера
-    },
+  plugins: [react()], 
+  server: {
+    open: true, // Автоматически открывать браузер при запуске сервера
+  },
 });
