@@ -1,64 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Box, TextField, Typography, Button, TableContainer, TableCell, TableRow, TableBody, TableHead, Table, Paper } from "@mui/material";
-import io from "socket.io-client";
 
-const socket = io("http://localhost:3000", {
-  auth: {
-    name: '', // Имя пользователя будет обновлено ниже
-  },
-});
-
-const ConfigModal = ({ onDefaultConfig, onCustomConfig }) => {
-  const [name, setName] = useState("");
-  const [lobbyName, setLobbyName] = useState("");
-  const [lobbies, setLobbies] = useState([]);
-  const [startGame, setStartGame] = useState(false);
-
-  useEffect(() => {
-    // Обновляем имя пользователя при подключении
-    socket.io.opts.auth.name = name;
-    socket.io.opts.query = `name=${name}`;
-    socket.disconnect().connect();
-  }, [name]);
-
-  // Получение списка лобби от сервера
-  useEffect(() => {
-    // Получаем список лобби при первом подключении
-    socket.on("initialLobbies", (lobbies) => {
-      setLobbies(lobbies);
-    });
-
-    // Обновляем список лобби при изменениях
-    socket.on("updateLobbies", (lobbies) => {
-      setLobbies(lobbies);
-    });
-
-    // Очистка слушателей при размонтировании
-    return () => {
-      socket.off("initialLobbies");
-      socket.off("updateLobbies");
-    };
-  }, []);
-
-  // Создание лобби
-  const handleCreateLobby = () => {
-    if (name && lobbyName) {
-      socket.emit("createLobby", { lobbyName, creatorName: name });
-      setStartGame(true);
-    }
-  };
-
-  // Присоединение к лобби
-  const handleJoinLobby = (lobbyId) => {
-    socket.emit("joinLobby", { lobbyId });
-    setStartGame(true);
-  };
-
-  // Обновление списка лобби
-  const handleUpdateLobbies = () => {
-    socket.emit("requestLobbies");
-  };
-
+const ConfigModal = ({
+  name,
+  setName,
+  lobbyName,
+  setLobbyName,
+  lobbies,
+  startGame,
+  onCreateLobby,
+  onJoinLobby,
+  onUpdateLobbies,
+  onDefaultConfig,
+  onCustomConfig,
+}) => {
   return (
     <Box>
       <Box>
@@ -80,10 +35,10 @@ const ConfigModal = ({ onDefaultConfig, onCustomConfig }) => {
             />
           </Box>
           <Box>
-            <Button onClick={handleCreateLobby}>Создать лобби</Button>
+            <Button onClick={onCreateLobby}>Создать лобби</Button>
           </Box>
           <Box>
-            <Button onClick={handleUpdateLobbies}>Обновить список лобби</Button>
+            <Button onClick={onUpdateLobbies}>Обновить список лобби</Button>
           </Box>
           <Box>
             <TableContainer component={Paper}>
@@ -102,7 +57,7 @@ const ConfigModal = ({ onDefaultConfig, onCustomConfig }) => {
                     lobbies.map((lobby, index) => (
                       <TableRow
                         key={lobby.id}
-                        onClick={() => handleJoinLobby(lobby.id)}
+                        onClick={() => onJoinLobby(lobby.id)}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       >
                         <TableCell component="th" scope="row">
