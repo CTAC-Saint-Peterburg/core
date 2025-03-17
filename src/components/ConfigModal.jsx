@@ -2,13 +2,24 @@ import React, { useState, useEffect } from "react";
 import { Box, TextField, Typography, Button, TableContainer, TableCell, TableRow, TableBody, TableHead, Table, Paper } from "@mui/material";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3000"); // Подключение к серверу
+const socket = io("http://localhost:3000", {
+  auth: {
+    name: '', // Имя пользователя будет обновлено ниже
+  },
+});
 
 const ConfigModal = ({ onDefaultConfig, onCustomConfig }) => {
   const [name, setName] = useState("");
   const [lobbyName, setLobbyName] = useState("");
   const [lobbies, setLobbies] = useState([]);
   const [startGame, setStartGame] = useState(false);
+
+  useEffect(() => {
+    // Обновляем имя пользователя при подключении
+    socket.io.opts.auth.name = name;
+    socket.io.opts.query = `name=${name}`;
+    socket.disconnect().connect();
+  }, [name]);
 
   // Получение списка лобби от сервера
   useEffect(() => {
@@ -51,63 +62,73 @@ const ConfigModal = ({ onDefaultConfig, onCustomConfig }) => {
   return (
     <Box>
       <Box>
+        <Typography>Никнейм: {name}</Typography>
         <TextField
-          label="Никнейм"
           variant="outlined"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <Typography>Никнейм: {name}</Typography>
       </Box>
-      <Box>
-        <TextField
-          label="Название лобби"
-          variant="outlined"
-          value={lobbyName}
-          onChange={(e) => setLobbyName(e.target.value)}
-        />
-        <Typography>Лобби: {lobbyName}</Typography>
-      </Box>
-      <Box>
-        <Button onClick={handleCreateLobby}>Создать лобби</Button>
-      </Box>
-      <Box>
-        <Button onClick={handleUpdateLobbies}>Обновить список лобби</Button>
-      </Box>
-      <Box>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell>Позиция</TableCell>
-                <TableCell align="right">Имя создателя</TableCell>
-                <TableCell align="right">Название лобби</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {lobbies.length > 0 ? (
-                lobbies.map((lobby, index) => (
-                  <TableRow
-                    key={lobby.id}
-                    onClick={() => handleJoinLobby(lobby.id)}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {index + 1}
-                    </TableCell>
-                    <TableCell align="right">{lobby.creator}</TableCell>
-                    <TableCell align="right">{lobby.name}</TableCell>
+      {!!name?.length && (
+        <>
+          <Box>
+            <Typography>Лобби: {lobbyName}</Typography>
+            <TextField
+              variant="outlined"
+              value={lobbyName}
+              onChange={(e) => setLobbyName(e.target.value)}
+            />
+          </Box>
+          <Box>
+            <Button onClick={handleCreateLobby}>Создать лобби</Button>
+          </Box>
+          <Box>
+            <Button onClick={handleUpdateLobbies}>Обновить список лобби</Button>
+          </Box>
+          <Box>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Позиция</TableCell>
+                    <TableCell align="right">Имя создателя</TableCell>
+                    <TableCell align="right">Название лобби</TableCell>
+                    <TableCell align="right">Время создания</TableCell>
+                    <TableCell align="right">Участники</TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={3} align="center">Нет доступных лобби</TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+                </TableHead>
+                <TableBody>
+                  {lobbies.length > 0 ? (
+                    lobbies.map((lobby, index) => (
+                      <TableRow
+                        key={lobby.id}
+                        onClick={() => handleJoinLobby(lobby.id)}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell align="right">{lobby.creator}</TableCell>
+                        <TableCell align="right">{lobby.name}</TableCell>
+                        <TableCell align="right">{lobby.createdAt}</TableCell>
+                        <TableCell align="right">
+                          {lobby.players.map((player, idx) => (
+                            <div key={idx}>{player.name}</div>
+                          ))}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={5} align="center">Нет доступных лобби</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Box>
+        </>
+      )}
       {startGame && (
         <Box
           id="configModal"
