@@ -14,12 +14,28 @@ import { createTimer } from '../../Timer';
 
 const CELL_SIZE = 60;
 
-const Game = ({ currentData }) => {
+const Game = ({ currentData, socket, name}) => {
   const gameRef = useRef(null);
+
 
   useEffect(() => {
     const app = new Application();
     const spawnCords = { x: 0, y: 0 };
+
+    let beforemymoveX = spawnCords.x;
+    let beforemymoveY = spawnCords.y;
+
+    let a;
+    let b;
+    
+    socket.on('keyPressedInLobby', (data) => {
+      // Если имя в данных не совпадает с текущим именем игрока
+      if (data.name !== name) {
+        a = data.x;
+        b = data.y;
+        console.log(`Пользователь ${data.name} нажал кнопку ${data.key} ${data.x} ${data.y}`);
+      }
+    });
 
     (async () => {
       await app.init({ background: '#1099bb', resizeTo: window });
@@ -42,8 +58,8 @@ const Game = ({ currentData }) => {
 
       const environment = CreateEnvironment(currentData, CELL_SIZE);
 
-      const player = CreatePlayer(spawnCords.x, spawnCords.y, texture);
-      const anotherPlayer = CreatePlayer(spawnCords.x, spawnCords.y + 100, texture)
+      const player = CreatePlayer('player',spawnCords.x, spawnCords.y, texture);
+      const anotherPlayer = CreatePlayer('test',0, 0, texture)
 
       const chests = createChests(textureChest, currentData, CELL_SIZE);
       const cages = createCages(textureCage, currentData, CELL_SIZE);
@@ -121,7 +137,29 @@ const Game = ({ currentData }) => {
           map.getChildByName('player').y = beforePlayerMove.y;
         }
 
+        if (a !== undefined && b !== undefined) {
+          map.getChildByName('test').x = a;
+          map.getChildByName('test').y = b;
+          map.getChildByName('test').children[0].text = `x: ${a} y: ${b}`;
+        }
         map.getChildByName('player').children[0].text = `x: ${player.x} y: ${player.y}`;
+
+
+        if (name) {
+          let currentX = player.x;
+          let currentY = player.y;
+  
+          // Если координаты изменились
+          if (currentX !== beforemymoveX || currentY !== beforemymoveY) {
+            // Отправляем новые координаты на сервер
+            socket.emit('keyPressed', { key: 11, name, x: currentX, y: currentY });
+  
+            // Обновляем предыдущие координаты
+            beforemymoveX = currentX;
+            beforemymoveY = currentY;
+          }
+        }
+        
       });
     })();
 

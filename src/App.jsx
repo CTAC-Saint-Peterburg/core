@@ -19,21 +19,6 @@ const App = () => {
   const [startGame, setStartGame] = useState(false);
 
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      console.log(e.code, 'test');
-      if (name) {
-        socket.emit('keyPressed', { key: e.code, name });
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [name]);
-
-  useEffect(() => {
     // Обновляем имя пользователя при подключении
     socket.io.opts.auth.name = name;
     socket.io.opts.query = `name=${name}`;
@@ -50,11 +35,6 @@ const App = () => {
     // Обновляем список лобби при изменениях
     socket.on("updateLobbies", (lobbies) => {
       setLobbies(lobbies);
-    });
-
-    // Получаем информацию о нажатой кнопке в лобби
-    socket.on('keyPressedInLobby', (data) => {
-      console.log(`Пользователь ${data.name} нажал кнопку ${data.key}`);
     });
 
     // Очистка слушателей при размонтировании
@@ -127,7 +107,7 @@ const App = () => {
           onCustomConfig={handleCustomConfig}
         />
       )}
-      {currentData && <Game currentData={currentData} />}
+      {currentData && <Game currentData={currentData} socket={socket} name={name} />}
     </div>
   );
 };
