@@ -184,7 +184,7 @@
     },
     {
       "color": "gray",
-      "x": 9,
+      "x": 0,
       "y": 2,
       "size": {
         "width": 1,
@@ -198,7 +198,21 @@
     },
     {
       "color": "gray",
-      "x": 15,
+      "x": 5,
+      "y": 2,
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "layer": 6,
+      "name": "",
+      "config": "",
+      "type": "spawn",
+      "number": 15
+    },
+    {
+      "color": "gray",
+      "x": 8,
       "y": 2,
       "size": {
         "width": 1,

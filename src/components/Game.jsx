@@ -14,9 +14,8 @@ import { createTimer } from '../../Timer';
 
 const CELL_SIZE = 60;
 
-const Game = ({ currentData, socket, name}) => {
+const Game = ({ currentData, socket, name }) => {
   const gameRef = useRef(null);
-
 
   useEffect(() => {
     const app = new Application();
@@ -25,17 +24,8 @@ const Game = ({ currentData, socket, name}) => {
     let beforemymoveX = spawnCords.x;
     let beforemymoveY = spawnCords.y;
 
-    let a;
-    let b;
-    
-    socket.on('keyPressedInLobby', (data) => {
-      // Если имя в данных не совпадает с текущим именем игрока
-      if (data.name !== name) {
-        a = data.x;
-        b = data.y;
-        console.log(`Пользователь ${data.name} нажал кнопку ${data.key} ${data.x} ${data.y}`);
-      }
-    });
+    let lobbyInfo = [];
+    let playersArr = [];
 
     (async () => {
       await app.init({ background: '#1099bb', resizeTo: window });
@@ -58,8 +48,7 @@ const Game = ({ currentData, socket, name}) => {
 
       const environment = CreateEnvironment(currentData, CELL_SIZE);
 
-      const player = CreatePlayer('player',spawnCords.x, spawnCords.y, texture);
-      const anotherPlayer = CreatePlayer('test',0, 0, texture)
+      const player = CreatePlayer('player', spawnCords.x, spawnCords.y, texture);
 
       const chests = createChests(textureChest, currentData, CELL_SIZE);
       const cages = createCages(textureCage, currentData, CELL_SIZE);
@@ -73,7 +62,8 @@ const Game = ({ currentData, socket, name}) => {
       const mapBordersCoords = [0, 3000, 3000, 0];
       const mapBorders = createMapBorders(...mapBordersCoords);
 
-      map.addChild(mapBorders, environment, ...chests, ...cages, ...characters, player, anotherPlayer);
+      // Добавляем игрока и другие объекты на карту
+      map.addChild(mapBorders, environment, ...chests, ...cages, ...characters, player);
       app.stage.addChild(map, controlCircle, gameUi);
 
       let defaultCirleCoords = { x: controlCircle.getChildByName('grey').x, y: controlCircle.getChildByName('grey').y };
@@ -99,6 +89,31 @@ const Game = ({ currentData, socket, name}) => {
           }
         }
         keys[event.key] = false;
+      });
+
+      // Обработчик для получения данных о других игроках
+      socket.on('keyPressedInLobby', (data) => {
+        if (data.name !== name) {
+          lobbyInfo = data.players;
+
+          // Обновляем позиции других игроков
+          lobbyInfo.forEach((player, index) => {
+            if (player.name !== name) {
+              // Если игрок уже существует, обновляем его позицию
+              if (playersArr[index]) {
+                playersArr[index].x = player.x;
+                playersArr[index].y = player.y;
+                playersArr[index].children[0].text = `x: ${player.x} y: ${player.y} name: ${player.name}`;
+              } else {
+                // Если игрок не существует, создаем его
+                const pObj = CreatePlayer(index, player.x, player.y, texture);
+                pObj.children[0].text = `x: ${player.x} y: ${player.y} name: ${player.name}`;
+                playersArr[index] = pObj;
+                map.addChild(pObj); // Добавляем игрока на карту
+              }
+            }
+          });
+        }
       });
 
       app.ticker.add((time) => {
@@ -137,29 +152,22 @@ const Game = ({ currentData, socket, name}) => {
           map.getChildByName('player').y = beforePlayerMove.y;
         }
 
-        if (a !== undefined && b !== undefined) {
-          map.getChildByName('test').x = a;
-          map.getChildByName('test').y = b;
-          map.getChildByName('test').children[0].text = `x: ${a} y: ${b}`;
-        }
-        map.getChildByName('player').children[0].text = `x: ${player.x} y: ${player.y}`;
-
+        map.getChildByName('player').children[0].text = `x: ${player.x} y: ${player.y} name: ${name}`;
 
         if (name) {
           let currentX = player.x;
           let currentY = player.y;
-  
+
           // Если координаты изменились
           if (currentX !== beforemymoveX || currentY !== beforemymoveY) {
             // Отправляем новые координаты на сервер
             socket.emit('keyPressed', { key: 11, name, x: currentX, y: currentY });
-  
+
             // Обновляем предыдущие координаты
             beforemymoveX = currentX;
             beforemymoveY = currentY;
           }
         }
-        
       });
     })();
 
