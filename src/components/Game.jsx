@@ -1,16 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import { Application, Assets, Container } from 'pixi.js';
-import { CreatePlayer } from '../../Player';
-import { CreateFogOfWar } from '../../FogOfWar';
-import { createChests } from '../../Chests';
-import { createCages } from '../../Cages';
-import { CreateControlCircle } from '../../ControlCircle';
-import { createGameUI } from '../../GameUi';
-import { createMapBorders } from '../../MapBorders';
-import { CreateCharacter } from '../../Character';
-import { checkCollision } from '../../CollisionDetection';
-import { CreateEnvironment } from '../../Environment';
-import { createTimer } from '../../Timer';
+import { CreatePlayer } from '../../modules/createElement/Player';
+import { CreateFogOfWar } from '../../modules/ui/FogOfWar';
+import { createChests } from '../../modules/createElement/Chests';
+import { createCages } from '../../modules/createElement/Cages';
+import { CreateControlCircle } from '../../modules/ui/ControlCircle';
+import { createGameUI } from '../../modules/ui/GameUi';
+import { createMapBorders } from '../../modules/createElement/MapBorders';
+import { CreateCharacter } from '../../modules/createElement/Character';
+import { checkCollision } from '../../modules/interactions/CollisionDetection';
+import { CreateEnvironment } from '../../modules/createElement/Environment';
+import { createTimer } from '../../modules/interactions/Timer';
 
 const CELL_SIZE = 60;
 

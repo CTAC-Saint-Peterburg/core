@@ -1,4 +1,4 @@
-import dataJSON from './settings/Characters.json';
+import dataJSON from '../../settings/Characters.json';
 
 const data = dataJSON;
 
