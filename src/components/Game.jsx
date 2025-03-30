@@ -11,6 +11,7 @@ import { CreateCharacter } from '../../modules/createElement/Character';
 import { checkCollision } from '../../modules/interactions/CollisionDetection';
 import { CreateEnvironment } from '../../modules/createElement/Environment';
 import { createTimer } from '../../modules/interactions/Timer';
+import { handleMovement } from '../../modules/actionFunctions/handleMovement';
 
 const CELL_SIZE = 60;
 
@@ -117,33 +118,15 @@ const Game = ({ currentData, socket, name }) => {
       });
 
       app.ticker.add((time) => {
-        let beforeMove = { x: map.x, y: map.y };
-        let beforePlayerMove = { x: map.getChildByName('player').x, y: map.getChildByName('player').y };
 
-        if (keys['w']) {
-          controlCircle.getChildByName('grey').y = defaultCirleCoords.y;
-          controlCircle.getChildByName('grey').y -= 110;
-          map.getChildByName('player').y -= speed;
-          map.y += speed;
-        }
-        if (keys['s']) {
-          controlCircle.getChildByName('grey').y = defaultCirleCoords.y;
-          controlCircle.getChildByName('grey').y += 110;
-          map.getChildByName('player').y += speed;
-          map.y -= speed;
-        }
-        if (keys['a']) {
-          controlCircle.getChildByName('grey').x = defaultCirleCoords.x;
-          controlCircle.getChildByName('grey').x -= 110;
-          map.getChildByName('player').x -= speed;
-          map.x += speed;
-        }
-        if (keys['d']) {
-          controlCircle.getChildByName('grey').x = defaultCirleCoords.x;
-          controlCircle.getChildByName('grey').x += 110;
-          map.getChildByName('player').x += speed;
-          map.x -= speed;
-        }
+        const { beforeMove, beforePlayerMove } = handleMovement(
+          keys,
+          map.getChildByName('player'),
+          map,
+          controlCircle,
+          defaultCirleCoords,
+          speed
+        );
 
         if (map.x > testBorder.x + spawnCords.x || map.x < testBorder.x - 3000 + spawnCords.x || map.y > testBorder.y + spawnCords.y || map.y < (testBorder.y - 3000 + spawnCords.y)) {
           map.x = beforeMove.x;
