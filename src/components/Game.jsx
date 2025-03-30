@@ -13,6 +13,7 @@ import { CreateEnvironment } from '../../modules/createElement/Environment';
 import { createTimer } from '../../modules/interactions/Timer';
 import { handleMovement } from '../../modules/actionFunctions/handleMovement';
 import { handleCheckMapBounds } from '../../modules/actionFunctions/handleCheckMapBounds';
+import { createCollisionZones, checkCollisionZones } from '../../modules/interactions/handleCollisionsZones';
 
 const CELL_SIZE = 60;
 
@@ -47,6 +48,7 @@ const Game = ({ currentData, socket, name }) => {
       map.y = app.screen.height / 2 - spawnCords.y;
 
       const testBorder = { x: map.x, y: map.y };
+      const collisionZones = createCollisionZones(currentData, CELL_SIZE);
 
       const environment = CreateEnvironment(currentData, CELL_SIZE);
 
@@ -129,13 +131,24 @@ const Game = ({ currentData, socket, name }) => {
           speed
         );
 
-        handleCheckMapBounds(
+        const hasCollision = checkCollisionZones(
+          player,
           map,
-          testBorder,
-          spawnCords,
-          beforeMove,
-          beforePlayerMove
-        );
+          collisionZones,
+          beforePlayerMove,
+          beforeMove
+      );
+  
+      // Проверяем границы карты только если не было коллизии
+      if (!hasCollision) {
+          handleCheckMapBounds(
+              map,
+              testBorder,
+              spawnCords,
+              beforeMove,
+              beforePlayerMove
+          );
+      }
 
         map.getChildByName('player').children[0].text = `x: ${player.x} y: ${player.y} name: ${name}`;
 
