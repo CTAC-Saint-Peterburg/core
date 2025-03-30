@@ -12,6 +12,7 @@ import { checkCollision } from '../../modules/interactions/CollisionDetection';
 import { CreateEnvironment } from '../../modules/createElement/Environment';
 import { createTimer } from '../../modules/interactions/Timer';
 import { handleMovement } from '../../modules/actionFunctions/handleMovement';
+import { handleCheckMapBounds } from '../../modules/actionFunctions/handleCheckMapBounds';
 
 const CELL_SIZE = 60;
 
@@ -128,12 +129,13 @@ const Game = ({ currentData, socket, name }) => {
           speed
         );
 
-        if (map.x > testBorder.x + spawnCords.x || map.x < testBorder.x - 3000 + spawnCords.x || map.y > testBorder.y + spawnCords.y || map.y < (testBorder.y - 3000 + spawnCords.y)) {
-          map.x = beforeMove.x;
-          map.y = beforeMove.y;
-          map.getChildByName('player').x = beforePlayerMove.x;
-          map.getChildByName('player').y = beforePlayerMove.y;
-        }
+        handleCheckMapBounds(
+          map,
+          testBorder,
+          spawnCords,
+          beforeMove,
+          beforePlayerMove
+        );
 
         map.getChildByName('player').children[0].text = `x: ${player.x} y: ${player.y} name: ${name}`;
 
