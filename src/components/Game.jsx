@@ -42,6 +42,8 @@ const Game = ({ currentData, socket, name }) => {
       const textureUIuse = await Assets.load('./assets/useIcon.jpg');
       const textureAttack = await Assets.load('./assets/attack.jpg');
       const textureCharacter = await Assets.load('./assets/character.jpg');
+      const runTexture = await Assets.load('./assets/run.png');
+      const idleTexture = await Assets.load('./assets/stand.png');
 
       const map = new Container();
       map.x = app.screen.width / 2 - spawnCords.x;
@@ -52,7 +54,16 @@ const Game = ({ currentData, socket, name }) => {
 
       const environment = CreateEnvironment(currentData, CELL_SIZE);
 
-      const player = CreatePlayer('player', spawnCords.x, spawnCords.y, texture);
+      const player = await CreatePlayer('player', spawnCords.x, spawnCords.y, texture, {
+        run: {
+            texture: runTexture,
+            params: { frames: 6, width: 16, height: 24, speed: 0.2, scale: 6 }
+        },
+        idle: {
+            texture: idleTexture,
+            params: { frames: 1, width: 16, height: 24, speed: 0.1, scale: 6 }
+        }
+    });
 
       const chests = createChests(textureChest, currentData, CELL_SIZE);
       const cages = createCages(textureCage, currentData, CELL_SIZE);
@@ -107,11 +118,11 @@ const Game = ({ currentData, socket, name }) => {
               if (playersArr[index]) {
                 playersArr[index].x = player.x;
                 playersArr[index].y = player.y;
-                playersArr[index].children[0].text = `x: ${player.x} y: ${player.y} name: ${player.name}`;
+                playersArr[index].children[1].text = `x: ${player.x} y: ${player.y} name: ${player.name}`;
               } else {
                 // Если игрок не существует, создаем его
                 const pObj = CreatePlayer(index, player.x, player.y, texture);
-                pObj.children[0].text = `x: ${player.x} y: ${player.y} name: ${player.name}`;
+                pObj.children[1].text = `x: ${player.x} y: ${player.y} name: ${player.name}`;
                 playersArr[index] = pObj;
                 map.addChild(pObj); // Добавляем игрока на карту
               }
@@ -150,7 +161,7 @@ const Game = ({ currentData, socket, name }) => {
           );
       }
 
-        map.getChildByName('player').children[0].text = `x: ${player.x} y: ${player.y} name: ${name}`;
+        map.getChildByName('player').children[1].text = `x: ${player.x} y: ${player.y} name: ${name}`;
 
         if (name) {
           let currentX = player.x;
