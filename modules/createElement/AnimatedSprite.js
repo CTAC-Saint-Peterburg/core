@@ -34,7 +34,7 @@ export const CreateAnimatedSprite = async (name, x = 0, y = 0, texture, config) 
     animatedSprite.animationSpeed = config.speed;
     animatedSprite.scale.set(config.scale);
     animatedSprite.play();
-    animatedSprite.loop = true;
+    animatedSprite.loop = config.loop;
 
     return animatedSprite;
 };
