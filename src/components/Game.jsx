@@ -15,6 +15,7 @@ import { handleButtonsPressed } from '../../modules/actionFunctions/handleButton
 import { handleMovement } from '../../modules/actionFunctions/handleMovement';
 import { handleCheckMapBounds } from '../../modules/actionFunctions/handleCheckMapBounds';
 import { createCollisionZones, checkCollisionZones } from '../../modules/interactions/handleCollisionsZones';
+import { CreateAlerts } from '../../modules/ui/Alert';
 
 const CELL_SIZE = 60;
 
@@ -62,6 +63,12 @@ const Game = ({ currentData, socket, name }) => {
       const chests = createChests(textureChest, currentData, CELL_SIZE);
       const cages = createCages(textureCage, currentData, CELL_SIZE);
       const characters = CreateCharacter(textureCharacter, currentData, CELL_SIZE);
+      const { container: alertsContainer, draw: showAlert } = CreateAlerts(app.screen.width, app.screen.height);
+      const alerts = {
+        show: showAlert,
+        clear: () => alertsContainer.clear(),
+        getQueue: () => alertsContainer.getQueueLength()
+    };
 
       const focus = CreateFogOfWar(app.screen.width, app.screen.height, app.renderer);
       const controlCircle = CreateControlCircle(Math.max(app.screen.width / 10, 200), Math.max(app.screen.height - (app.screen.height / 4), 300), 150);
@@ -73,7 +80,7 @@ const Game = ({ currentData, socket, name }) => {
 
       // Добавляем игрока и другие объекты на карту
       map.addChild(mapBorders, environment, ...chests, ...cages, ...characters, player);
-      app.stage.addChild(map, controlCircle, gameUi);
+      app.stage.addChild(map, controlCircle, gameUi, alertsContainer, alertsContainer);
 
       let defaultCirleCoords = { x: controlCircle.getChildByName('grey').x, y: controlCircle.getChildByName('grey').y };
 
@@ -138,7 +145,7 @@ const Game = ({ currentData, socket, name }) => {
           speed
         );
 
-        handleButtonsPressed(keys, map.getChildByName('player'));
+        handleButtonsPressed(keys, map.getChildByName('player'), alerts);
 
         const hasCollision = checkCollisionZones(
           player,
