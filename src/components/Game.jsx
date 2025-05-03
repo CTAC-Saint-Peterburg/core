@@ -11,6 +11,7 @@ import { CreateCharacter } from '../../modules/createElement/Character';
 import { checkCollision } from '../../modules/interactions/CollisionDetection';
 import { CreateEnvironment } from '../../modules/createElement/Environment';
 import { createTimer } from '../../modules/interactions/Timer';
+import { handleButtonsPressed } from '../../modules/actionFunctions/handleButtonsPressed';
 import { handleMovement } from '../../modules/actionFunctions/handleMovement';
 import { handleCheckMapBounds } from '../../modules/actionFunctions/handleCheckMapBounds';
 import { createCollisionZones, checkCollisionZones } from '../../modules/interactions/handleCollisionsZones';
@@ -44,6 +45,8 @@ const Game = ({ currentData, socket, name }) => {
       const textureCharacter = await Assets.load('./assets/character.jpg');
       const runTexture = await Assets.load('./assets/run.png');
       const idleTexture = await Assets.load('./assets/stand.png');
+      const hitTexture = await Assets.load('./assets/hit.png');
+      const dieTexture = await Assets.load('./assets/die.png');
 
       const map = new Container();
       map.x = app.screen.width / 2 - spawnCords.x;
@@ -54,16 +57,7 @@ const Game = ({ currentData, socket, name }) => {
 
       const environment = CreateEnvironment(currentData, CELL_SIZE);
 
-      const player = await CreatePlayer('player', spawnCords.x, spawnCords.y, texture, {
-        run: {
-            texture: runTexture,
-            params: { frames: 6, width: 16, height: 24, speed: 0.2, scale: 6 }
-        },
-        idle: {
-            texture: idleTexture,
-            params: { frames: 1, width: 16, height: 24, speed: 0.1, scale: 6 }
-        }
-    });
+      const player = await CreatePlayer('player', spawnCords.x, spawnCords.y, texture, [runTexture, idleTexture, hitTexture, dieTexture]);
 
       const chests = createChests(textureChest, currentData, CELL_SIZE);
       const cages = createCages(textureCage, currentData, CELL_SIZE);
@@ -95,6 +89,8 @@ const Game = ({ currentData, socket, name }) => {
       window.addEventListener('keyup', (event) => {
         controlCircle.getChildByName('grey').x = defaultCirleCoords.x;
         controlCircle.getChildByName('grey').y = defaultCirleCoords.y;
+
+        player.changeAnimation('idle');
 
         if (keys['f']) {
           let address = app.stage.getChildByName('attack', true);
@@ -141,6 +137,8 @@ const Game = ({ currentData, socket, name }) => {
           defaultCirleCoords,
           speed
         );
+
+        handleButtonsPressed(keys, map.getChildByName('player'));
 
         const hasCollision = checkCollisionZones(
           player,

@@ -1,7 +1,7 @@
  export const handleMovement = (keys, player, map, controlCircle, defaultCirleCoords, speed) => {
     const beforeMove = { x: map.x, y: map.y };
     const beforePlayerMove = { x: player.x, y: player.y };
-    player.changeAnimation('idle');
+    // player.changeAnimation('idle');
 
     if (keys['w']) {
       controlCircle.getChildByName('grey').y = defaultCirleCoords.y - 110;
