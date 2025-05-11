@@ -40,9 +40,9 @@ const Game = ({ currentData, socket, name }) => {
       const textureChest = await Assets.load('./assets/spriteChest.jpg');
       const textureCage = await Assets.load('./assets/cageoriginal.jpg');
       const textureUImap = await Assets.load('./assets/map.jpg');
-      const textureUISettings = await Assets.load('./assets/settingsIcon.jpg');
-      const textureUIuse = await Assets.load('./assets/useIcon.jpg');
-      const textureAttack = await Assets.load('./assets/attack.jpg');
+      const textureUISettings = await Assets.load('./assets/settings.jpg');
+      const textureUIuse = await Assets.load('./assets/use.jpg');
+      const textureAttack = await Assets.load('./assets/knife.jpg');
       const textureCharacter = await Assets.load('./assets/character.jpg');
       const runTexture = await Assets.load('./assets/run.png');
       const idleTexture = await Assets.load('./assets/stand.png');
