@@ -110,29 +110,61 @@ const Game = ({ currentData, socket, name }) => {
       });
 
       // Обработчик для получения данных о других игроках
-      socket.on('keyPressedInLobby', (data) => {
-        if (data.name !== name) {
-          lobbyInfo = data.players;
-
-          // Обновляем позиции других игроков
-          lobbyInfo.forEach((player, index) => {
-            if (player.name !== name) {
-              // Если игрок уже существует, обновляем его позицию
-              if (playersArr[index]) {
-                playersArr[index].x = player.x;
-                playersArr[index].y = player.y;
-                playersArr[index].children[1].text = `x: ${player.x} y: ${player.y} name: ${player.name}`;
-              } else {
-                // Если игрок не существует, создаем его
-                const pObj = CreatePlayer(index, player.x, player.y, texture);
-                pObj.children[1].text = `x: ${player.x} y: ${player.y} name: ${player.name}`;
-                playersArr[index] = pObj;
-                map.addChild(pObj); // Добавляем игрока на карту
-              }
-            }
-          });
+      socket.on('keyPressedInLobby', async (data) => {
+        try {
+            // Проверяем, что данные валидны и есть игроки для обработки
+            if (!data?.players || !Array.isArray(data.players)) return;
+    
+            // Обновляем информацию о лобби
+            lobbyInfo = data.players;
+    
+            // Обрабатываем каждого игрока асинхронно
+            await Promise.all(lobbyInfo.map(async (playerData) => {
+                // Пропускаем текущего игрока
+                if (playerData.name === name) return;
+    
+                // Ищем существующего игрока по имени (более надежно, чем по индексу)
+                const existingPlayerIndex = playersArr.findIndex(p => p?.name === playerData.name);
+    
+                if (existingPlayerIndex >= 0) {
+                    // Обновляем существующего игрока
+                    const player = playersArr[existingPlayerIndex];
+                    player.x = playerData.x;
+                    player.y = playerData.y;
+                    
+                    // Безопасное обновление текста
+                    if (player.children && player.children[1] && player.children[1].text) {
+                        player.children[1].text = `x: ${playerData.x} y: ${playerData.y} name: ${playerData.name}`;
+                    }
+                } else {
+                    try {
+                        // Создаем нового игрока с анимациями
+                        const newPlayer = await CreatePlayer(
+                            playerData.name,  // Используем имя как идентификатор
+                            playerData.x,
+                            playerData.y,
+                            texture,
+                            [runTexture, idleTexture, hitTexture, dieTexture]
+                        );
+                        
+                        // Добавляем информацию о игроке
+                        if (newPlayer.children && newPlayer.children[1]) {
+                            newPlayer.children[1].text = `x: ${playerData.x} y: ${playerData.y} name: ${playerData.name}`;
+                        }
+                        
+                        // Добавляем в массив и на карту
+                        playersArr.push(newPlayer);
+                        map.addChild(newPlayer);
+                    } catch (error) {
+                        console.error(`Failed to create player ${playerData.name}:`, error);
+                    }
+                }
+            }));
+    
+        } catch (error) {
+            console.error('Error processing lobby data:', error);
         }
-      });
+    });
 
       app.ticker.add((time) => {
 
