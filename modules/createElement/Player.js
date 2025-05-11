@@ -38,8 +38,9 @@ export const CreatePlayer = async (name, x = 0, y = 0, texture, animationsTextur
 
     // Текст с координатами
     const text = new Text({ text: `x: ${x} y: ${y}` });
+    text.anchor.set(0.5, 0.5);
     text.x = 0;
-    text.y = -50;
+    text.y = -140;
     playerContainer.addChild(text);
 
     const healthBar = CreateHealthBar(-52, -120, playerContainer.health);
@@ -54,8 +55,8 @@ export const CreatePlayer = async (name, x = 0, y = 0, texture, animationsTextur
     for (const [state, config] of Object.entries(animations)) {
         animState[state] = await CreateAnimatedSprite(
             `${name}_${state}`,
-            0,
-            -50,
+            -45,
+            -100,
             config.texture,
             config.params
         );
