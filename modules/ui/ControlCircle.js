@@ -6,7 +6,7 @@ export const CreateControlCircle = (x,y, radius) =>  {
     circle.x = x;
     circle.y = y;
     let innerCircle = new Graphics().circle(0, 0, 40).fill("grey");
-    innerCircle.name = 'grey';
+    innerCircle.label = 'grey';
     innerCircle.x = circle.x;
     innerCircle.y = circle.y
 

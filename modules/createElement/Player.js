@@ -25,7 +25,7 @@ export const CreatePlayer = async (name, x = 0, y = 0, texture, animationsTextur
     const playerContainer = new Container();
     playerContainer.x = x;
     playerContainer.y = y;
-    playerContainer.name = name;
+    playerContainer.label = name;
 
     // Добавляем здоровье игрока
     playerContainer.health = 100;

@@ -30,7 +30,7 @@ export const CreateAnimatedSprite = async (name, x = 0, y = 0, texture, config) 
     const animatedSprite = new AnimatedSprite(spritesheet.animations.animate);
     animatedSprite.x = x;
     animatedSprite.y = y;
-    animatedSprite.name = name;
+    animatedSprite.label = name;
     animatedSprite.animationSpeed = config.speed;
     animatedSprite.scale.set(config.scale);
     animatedSprite.play();

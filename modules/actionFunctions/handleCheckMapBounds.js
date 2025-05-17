@@ -8,8 +8,8 @@ export const handleCheckMapBounds = (map, testBorder, spawnCords, beforeMove, be
     if (isOutOfBounds) {
       map.x = beforeMove.x;
       map.y = beforeMove.y;
-      map.getChildByName('player').x = beforePlayerMove.x;
-      map.getChildByName('player').y = beforePlayerMove.y;
+      map.getChildByLabel('player').x = beforePlayerMove.x;
+      map.getChildByLabel('player').y = beforePlayerMove.y;
     }
 
     return isOutOfBounds;

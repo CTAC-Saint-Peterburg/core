@@ -3,7 +3,7 @@ import { Graphics, Text, Container, Color } from "pixi.js";
 export const CreateAlerts = (screenWidth, screenHeight) => {
     // Создаем основной контейнер для алертов
     const alertContainer = new Container();
-    alertContainer.name = "alertsContainer";
+    alertContainer.label = "alertsContainer";
     alertContainer.zIndex = 9999;
     alertContainer.eventMode = 'static';
     
@@ -70,7 +70,7 @@ export const CreateAlerts = (screenWidth, screenHeight) => {
 
         // Создаем графику для фона алерта
         currentAlert = new Graphics();
-        currentAlert.name = "alertBackground";
+        currentAlert.label = "alertBackground";
 
         // Полноэкранный режим
         if (fullscreen) {
@@ -109,7 +109,7 @@ export const CreateAlerts = (screenWidth, screenHeight) => {
                 fontFamily: 'Arial'
             }
         });
-        currentText.name = "alertText";
+        currentText.label = "alertText";
 
         // Позиционирование текста
         if (fullscreen) {

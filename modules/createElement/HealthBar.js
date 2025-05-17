@@ -14,12 +14,12 @@ export const CreateHealthBar = (x, y, health) => {
     const healthBar = new Graphics();
     healthBar.rect(2, 2, 100 * (health / 100), 10);
     healthBar.fill(0xFF0000);
-    healthBar.name = "healthBar";
+    healthBar.label = "healthBar";
     healthBarContainer.addChild(healthBar);
 
     // Health update method
     healthBarContainer.updateHealth = (newHealth) => {
-        const healthBar = healthBarContainer.getChildByName("healthBar");
+        const healthBar = healthBarContainer.getChildByLabel("healthBar");
         healthBar.clear();
         healthBar.rect(2, 2, 100 * (newHealth / 100), 10);
         healthBar.fill(0xFF0000);

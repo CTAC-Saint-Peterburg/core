@@ -22,7 +22,7 @@ export const createGameUI = (appWidth, appHeight, textures) => {
         const mock = new Container();
         mock.x = unit.x;
         mock.y = unit.y;
-        mock.name = unit.name + 'container';
+        mock.label = unit.name + 'container';
 
         const text = new Text({
             text: '',
@@ -35,7 +35,7 @@ export const createGameUI = (appWidth, appHeight, textures) => {
         });
         text.x = -30;
         text.y = -60;
-        text.name = unit.name;
+        text.label = unit.name;
         text.timerState = false;
 
         const titleText = new Text({

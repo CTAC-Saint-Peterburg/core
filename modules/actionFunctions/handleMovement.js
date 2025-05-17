@@ -4,25 +4,25 @@
     // player.changeAnimation('idle');
 
     if (keys['w']) {
-      controlCircle.getChildByName('grey').y = defaultCirleCoords.y - 110;
+      controlCircle.getChildByLabel('grey').y = defaultCirleCoords.y - 110;
       player.changeAnimation('run');
       player.y -= speed;
       map.y += speed;
     }
     if (keys['s']) {
-      controlCircle.getChildByName('grey').y = defaultCirleCoords.y + 110;
+      controlCircle.getChildByLabel('grey').y = defaultCirleCoords.y + 110;
       player.changeAnimation('run');
       player.y += speed;
       map.y -= speed;
     }
     if (keys['a']) {
-      controlCircle.getChildByName('grey').x = defaultCirleCoords.x - 110;
+      controlCircle.getChildByLabel('grey').x = defaultCirleCoords.x - 110;
       player.changeAnimation('run');
       player.x -= speed;
       map.x += speed;
     }
     if (keys['d']) {
-      controlCircle.getChildByName('grey').x = defaultCirleCoords.x + 110;
+      controlCircle.getChildByLabel('grey').x = defaultCirleCoords.x + 110;
       player.changeAnimation('run');
       player.x += speed;
       map.x -= speed;

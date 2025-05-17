@@ -82,7 +82,7 @@ const Game = ({ currentData, socket, name }) => {
       map.addChild(mapBorders, environment, ...chests, ...cages, ...characters, player);
       app.stage.addChild(map, controlCircle, gameUi, alertsContainer, alertsContainer);
 
-      let defaultCirleCoords = { x: controlCircle.getChildByName('grey').x, y: controlCircle.getChildByName('grey').y };
+      let defaultCirleCoords = { x: controlCircle.getChildByLabel('grey').x, y: controlCircle.getChildByLabel('grey').y };
 
       map.mask = focus;
 
@@ -94,13 +94,13 @@ const Game = ({ currentData, socket, name }) => {
       });
 
       window.addEventListener('keyup', (event) => {
-        controlCircle.getChildByName('grey').x = defaultCirleCoords.x;
-        controlCircle.getChildByName('grey').y = defaultCirleCoords.y;
+        controlCircle.getChildByLabel('grey').x = defaultCirleCoords.x;
+        controlCircle.getChildByLabel('grey').y = defaultCirleCoords.y;
 
         player.changeAnimation('idle');
 
         if (keys['f']) {
-          let address = app.stage.getChildByName('attack', true);
+          let address = app.stage.getChildByLabel('attack', true);
           if (!address.timerState) {
             createTimer(address, 5);
             checkCollision(player);
@@ -170,14 +170,14 @@ const Game = ({ currentData, socket, name }) => {
 
         const { beforeMove, beforePlayerMove } = handleMovement(
           keys,
-          map.getChildByName('player'),
+          map.getChildByLabel('player'),
           map,
           controlCircle,
           defaultCirleCoords,
           speed
         );
 
-        handleButtonsPressed(keys, map.getChildByName('player'), alerts);
+        handleButtonsPressed(keys, map.getChildByLabel('player'), alerts);
 
         const hasCollision = checkCollisionZones(
           player,
@@ -198,7 +198,7 @@ const Game = ({ currentData, socket, name }) => {
           );
       }
 
-        map.getChildByName('player').children[1].text = `x: ${player.x} y: ${player.y} name: ${name}`;
+        map.getChildByLabel('player').children[1].text = `x: ${player.x} y: ${player.y} name: ${name}`;
 
         if (name) {
           let currentX = player.x;
