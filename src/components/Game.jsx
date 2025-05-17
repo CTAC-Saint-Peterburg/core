@@ -130,6 +130,7 @@ const Game = ({ currentData, socket, name }) => {
                     // Обновляем существующего игрока
                     const player = playersArr[existingPlayerIndex];
                     player.changePosition(playerData.x, playerData.y);
+                    player.changeAnimation(playerData.animationState || 'idle');
                 } else {
                     try {
                         // Создаем нового игрока с анимациями
@@ -140,6 +141,9 @@ const Game = ({ currentData, socket, name }) => {
                             texture,
                             [runTexture, idleTexture, hitTexture, dieTexture]
                         );
+
+                        // Устанавливаем начальную анимацию
+                        newPlayer.changeAnimation(playerData.animationState || 'idle');
                         
                         // Добавляем в массив и на карту
                         playersArr.push(newPlayer);
@@ -187,6 +191,7 @@ const Game = ({ currentData, socket, name }) => {
           );
       }
 
+        const animationState = keys['w'] || keys['a'] || keys['s'] || keys['d'] ? 'run' : 'idle';
         map.getChildByLabel('player').children[1].text = `x: ${player.x} y: ${player.y} name: ${name}`;
 
         if (name) {
@@ -194,9 +199,10 @@ const Game = ({ currentData, socket, name }) => {
           let currentY = player.y;
 
           // Если координаты изменились
-          if (currentX !== beforemymoveX || currentY !== beforemymoveY) {
+          if (currentX !== beforemymoveX || currentY !== beforemymoveY || 
+            player.currentAnimationState !== animationState) {
             // Отправляем новые координаты на сервер
-            socket.emit('keyPressed', { key: 11, name, x: currentX, y: currentY });
+            socket.emit('keyPressed', { key: 11, name, x: currentX, y: currentY, animationState });
 
             // Обновляем предыдущие координаты
             beforemymoveX = currentX;
