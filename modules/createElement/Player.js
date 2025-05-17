@@ -64,6 +64,22 @@ export const CreatePlayer = async (name, x = 0, y = 0, texture, animationsTextur
         playerContainer.addChild(animState[state]);
     }
 
+    // Метод для изменения координат
+    playerContainer.changePosition = (newX, newY) => {
+        // Обновляем только если координаты изменились
+        if (newX !== undefined && newX !== playerContainer.x) {
+            playerContainer.x = newX;
+        }
+        if (newY !== undefined && newY !== playerContainer.y) {
+            playerContainer.y = newY;
+        }
+        
+        // Обновляем текст с координатами
+        text.text = `x: ${Math.round(playerContainer.x)} y: ${Math.round(playerContainer.y)} name: ${playerContainer.label}`;
+        
+        return { x: playerContainer.x, y: playerContainer.y };
+    };
+
     // Метод для изменения состояния анимации
     playerContainer.changeAnimation = (state) => {
         if (playerContainer.health <= 0) {

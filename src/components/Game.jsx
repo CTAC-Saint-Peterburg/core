@@ -129,13 +129,7 @@ const Game = ({ currentData, socket, name }) => {
                 if (existingPlayerIndex >= 0) {
                     // Обновляем существующего игрока
                     const player = playersArr[existingPlayerIndex];
-                    player.x = playerData.x;
-                    player.y = playerData.y;
-                    
-                    // Безопасное обновление текста
-                    if (player.children && player.children[1] && player.children[1].text) {
-                        player.children[1].text = `x: ${playerData.x} y: ${playerData.y} name: ${playerData.name}`;
-                    }
+                    player.changePosition(playerData.x, playerData.y);
                 } else {
                     try {
                         // Создаем нового игрока с анимациями
@@ -146,11 +140,6 @@ const Game = ({ currentData, socket, name }) => {
                             texture,
                             [runTexture, idleTexture, hitTexture, dieTexture]
                         );
-                        
-                        // Добавляем информацию о игроке
-                        if (newPlayer.children && newPlayer.children[1]) {
-                            newPlayer.children[1].text = `x: ${playerData.x} y: ${playerData.y} name: ${playerData.name}`;
-                        }
                         
                         // Добавляем в массив и на карту
                         playersArr.push(newPlayer);
