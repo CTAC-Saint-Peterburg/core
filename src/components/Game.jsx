@@ -148,7 +148,17 @@ const Game = ({ currentData, socket, name }) => {
           let address = app.stage.getChildByLabel("attack", true);
           if (!address.timerState) {
             createTimer(address, 5);
-            checkCollision(player);
+            const collidedPlayer = checkCollision(player, playersArr);
+            if (collidedPlayer) {
+              // Если есть коллизия, можно что-то сделать с collidedPlayer
+              console.log(`Игрок ${name} атаковал ${collidedPlayer.name}`);
+
+              socket.emit("playerAttack", {
+                attacker: name,
+                target: collidedPlayer.label,
+                damage: 50,
+              });
+            }
           }
         }
         keys[event.key] = false;
@@ -213,10 +223,23 @@ const Game = ({ currentData, socket, name }) => {
       });
 
       socket.on("joinAlert", async (data) => {
-        alerts.show(`${data.text}`, false, 'left', 'top', 6);
-      })
+        alerts.show(`${data.text}`, false, "left", "top", 6);
+      });
 
+      socket.on("playerAttacked", (data) => {
+        const { attacker, target, damage, newHealth } = data;
 
+        // Если атаковали текущего игрока
+        if (target === name) {
+          player.changeHealth(-damage);
+        }
+
+        // Обновляем здоровье у соответствующего игрока в playersArr
+        const attackedPlayer = playersArr.find((p) => p.name === target);
+        if (attackedPlayer) {
+          attackedPlayer.changeHealth(-damage);
+        }
+      });
 
       let hasSentIdle = false; // Флаг для отслеживания отправки idle
 
