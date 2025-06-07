@@ -1,30 +1,18 @@
 import React from "react";
 import { Box, TextField, Typography, Button, TableContainer, TableCell, TableRow, TableBody, TableHead, Table, Paper } from "@mui/material";
+import useGameStore from "../zustandStore/store";
+const ConfigModal = () => {
+const { 
+    lobbyName, 
+    setLobbyName, 
+    lobbies, 
+    createLobby, 
+    joinLobby, 
+    updateLobbies 
+  } = useGameStore();
 
-const ConfigModal = ({
-  name,
-  setName,
-  lobbyName,
-  setLobbyName,
-  lobbies,
-  startGame,
-  onCreateLobby,
-  onJoinLobby,
-  onUpdateLobbies,
-  onDefaultConfig,
-  onCustomConfig,
-}) => {
   return (
     <Box>
-      <Box>
-        <Typography>Никнейм: {name}</Typography>
-        <TextField
-          variant="outlined"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </Box>
-      {!!name?.length && (
         <>
           <Box>
             <Typography>Лобби: {lobbyName}</Typography>
@@ -35,10 +23,10 @@ const ConfigModal = ({
             />
           </Box>
           <Box>
-            <Button onClick={onCreateLobby}>Создать лобби</Button>
+            <Button onClick={createLobby}>Создать лобби</Button>
           </Box>
           <Box>
-            <Button onClick={onUpdateLobbies}>Обновить список лобби</Button>
+            <Button onClick={updateLobbies}>Обновить список лобби</Button>
           </Box>
           <Box>
             <TableContainer component={Paper}>
@@ -53,11 +41,11 @@ const ConfigModal = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {lobbies.length > 0 ? (
-                    lobbies.map((lobby, index) => (
+                  {lobbies?.length > 0 ? (
+                    lobbies?.map((lobby, index) => (
                       <TableRow
                         key={lobby.id}
-                        onClick={() => onJoinLobby(lobby.id)}
+                        onClick={() => joinLobby(lobby.id)}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       >
                         <TableCell component="th" scope="row">
@@ -83,27 +71,6 @@ const ConfigModal = ({
             </TableContainer>
           </Box>
         </>
-      )}
-      {startGame && (
-        <Box
-          id="configModal"
-          style={{
-            display: "block",
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            background: "white",
-            padding: "20px",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
-            zIndex: 1000,
-          }}
-        >
-          <p>Выберите конфигурацию:</p>
-          <button onClick={onDefaultConfig}>Стандартный конфиг</button>
-          <button onClick={onCustomConfig}>Загрузить свой конфиг</button>
-        </Box>
-      )}
     </Box>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import useGameStore from "../zustandStore/store";
 import { Application, Assets, Container } from "pixi.js";
 import { CreatePlayer } from "../../modules/createElement/Player";
 import { CreateFogOfWar } from "../../modules/ui/FogOfWar";
@@ -22,15 +23,17 @@ import { CreateAlerts } from "../../modules/ui/Alert";
 
 const CELL_SIZE = 60;
 
-const Game = ({ currentData, socket, name }) => {
+const Game = () => {
+  const { 
+    currentData, 
+    socket, 
+    name,
+  } = useGameStore();
   const gameRef = useRef(null);
 
   useEffect(() => {
     const app = new Application();
     const spawnCords = { x: 0, y: 0 };
-
-    let beforemymoveX = spawnCords.x;
-    let beforemymoveY = spawnCords.y;
 
     let lobbyInfo = [];
     let playersArr = [];
